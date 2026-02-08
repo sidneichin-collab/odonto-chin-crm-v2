@@ -13,7 +13,7 @@ const DEFAULT_TENANT_ID = 1;
 export const appRouter = router({
   // Dashboard endpoints
   dashboard: {
-    getStats: publicProcedure.query(async () => {
+    stats: publicProcedure.query(async () => {
       const stats = await db.getDashboardStats(DEFAULT_TENANT_ID);
       return stats;
     }),
