@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initializeSystem } from "../init-system";
+import { runAutoMigration } from "../auto-migrate";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -29,6 +30,9 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // Run auto-migration first
+  await runAutoMigration();
+  
   // Initialize system (create default tenant if needed)
   await initializeSystem();
   
