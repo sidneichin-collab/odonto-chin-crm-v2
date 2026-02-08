@@ -1,10 +1,14 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { Users, Calendar, Clock, AlertTriangle, TrendingUp, Activity } from "lucide-react";
+import { Users, Calendar, Clock, AlertTriangle, TrendingUp, Activity, UserPlus } from "lucide-react";
+import { QuickPatientRegistration } from "@/components/QuickPatientRegistration";
 
 export default function Dashboard() {
-  const { data: stats, isLoading } = trpc.dashboard.stats.useQuery(undefined, {
+  const [showQuickRegistration, setShowQuickRegistration] = useState(false);
+  const { data: stats, isLoading, refetch } = trpc.dashboard.stats.useQuery(undefined, {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
@@ -77,12 +81,28 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-2">
-            Bienvenido al sistema de gestión odontológica
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground mt-2">
+              Bienvenido al sistema de gestión odontológica
+            </p>
+          </div>
+          <Button
+            onClick={() => setShowQuickRegistration(true)}
+            className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+          >
+            <UserPlus className="h-4 w-4" />
+            Adicionar Paciente
+          </Button>
         </div>
+
+        {/* Quick Registration Modal */}
+        <QuickPatientRegistration
+          open={showQuickRegistration}
+          onOpenChange={setShowQuickRegistration}
+          onSuccess={() => refetch()}
+        />
 
         {/* Stats Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
